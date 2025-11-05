@@ -10,5 +10,5 @@ venv:
 deps:
 	./venv/bin/pip3 install -r requirements.txt
 
-serve:
+run:
 	./venv/bin/python3 serve.py

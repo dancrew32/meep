@@ -1,3 +1,4 @@
+from functools import wraps
 from flask import Flask, request, jsonify, render_template
 from graphql import graphql_sync, build_schema
 
@@ -19,20 +20,37 @@ query_type = schema.get_type("Query")
 mutation_type = schema.get_type("Mutation")
 
 
-def resolve_hello(obj, info):
+def resolver(root_type: str):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(obj, info, **kwargs):
+            return func(obj, info, **kwargs)
+
+        field_name = func.__name__
+        if root_type == "query":
+            field = query_type.fields[field_name].resolve = wrapper
+        elif root_type == "mutation":
+            field = mutation_type.fields[field_name].resolve = wrapper
+        else:
+            raise Exception("missing field")
+
+    return decorator
+
+
+
+@resolver('query')
+def hello(obj, info):
     return "world"
 
-query_type.fields["hello"].resolve = resolve_hello
 
-def resolve_echo(obj, info, msg):
+@resolver('query')
+def echo(obj, info, msg):
     return f"Echo: {msg}"
 
-query_type.fields["echo"].resolve = resolve_echo
 
-def resolve_shout(obj, info, msg):
+@resolver('mutation')
+def shout(obj, info, msg):
     return msg.upper()
-
-mutation_type.fields["shout"].resolve = resolve_shout
 
 
 @app.post("/graphql")

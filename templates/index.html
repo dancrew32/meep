@@ -3,26 +3,9 @@
     <head>
         <meta charset=utf-8/>
         <title>GraphQL</title>
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon-16x16.png') }}">
     </head>
     <body>
-        <script>
-            const params = {
-                query: `
-                  query { 
-                    hello
-                    echo(msg: "hi")
-                  }
-                `
-            };
-            const options = {
-                method: 'post',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(params),
-            };
-            fetch('/graphql', options)
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.error('Error:', error));
-        </script>
+        <script src="/static/test.js"></script>
     </body>
 </html>
